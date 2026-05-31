@@ -1,0 +1,24 @@
+# SkipKey
+
+> SkipKey is a custom iOS keyboard that transcribes your voice entirely on-device. No cloud, no account, no data leaves your phone.
+
+## What it does
+
+SkipKey is an iPhone keyboard extension that lets you dictate text into any app — Messages, Notes, Mail, or any text field — using local speech recognition. You tap Start Recording in the keyboard, speak, tap Stop, and the transcript inserts automatically.
+
+All speech recognition runs on-device using a bundled AI model. Nothing is sent to a server.
+
+## Key features
+
+- Local & private: voice never leaves the device
+- Works in any app via the iOS custom keyboard system
+- Auto-inserts the transcript when you stop recording
+- Supports 25 languages with automatic detection (no selector needed)
+- Optional AI post-processing: custom modes transform transcripts before insertion (e.g. translate to German, convert to semi-formal tone)
+- iOS Shortcuts integration: trigger recording from the Shortcuts app
+
+## Pages
+
+- Home: https://skipkey.app/
+- Privacy Policy: https://skipkey.app/privacy
+- Terms of Service: https://skipkey.app/terms
