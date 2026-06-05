@@ -6,688 +6,701 @@
     <title>SkipKey — Voice to Text on iPhone</title>
     <meta name="description" content="Dictate anything, in any app. Privately. SkipKey is a custom iOS keyboard that transcribes your voice on-device — no cloud, no account.">
     <link rel="canonical" href="https://skipkey.app/">
-
-    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://skipkey.app/">
     <meta property="og:title" content="SkipKey — Voice to Text on iPhone">
     <meta property="og:description" content="Dictate anything, in any app. Privately. A custom iOS keyboard that transcribes your voice on-device — no cloud, no account.">
     <meta property="og:image" content="https://skipkey.app/icon.png">
     <meta property="og:site_name" content="SkipKey">
-
-    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="SkipKey — Voice to Text on iPhone">
     <meta name="twitter:description" content="Dictate anything, in any app. Privately. A custom iOS keyboard that transcribes your voice on-device.">
     <meta name="twitter:image" content="https://skipkey.app/icon.png">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
         :root {
-            --white: #ffffff;
-            --black: #000000;
-            --white-70: rgba(255,255,255,0.70);
-            --white-50: rgba(255,255,255,0.50);
-            --white-45: rgba(255,255,255,0.45);
-            --white-15: rgba(255,255,255,0.15);
+            --paper:   #EDE7D7;
+            --paper-2: #E4DCC8;
+            --ink:     #15140F;
+            --ink-2:   #1C1B15;
+            --soft:    #5C584C;
+            --faint:   #938D7C;
+            --rule:    rgba(21,20,15,.16);
+            --rule-2:  rgba(21,20,15,.30);
+            --accent:  #2733E0;
+            --accent-ink: #EDE7D7;
+            --serif: "Instrument Serif", Georgia, serif;
+            --mono:  "Space Mono", ui-monospace, monospace;
+            --sans:  "Hanken Grotesk", system-ui, sans-serif;
         }
 
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
 
         body {
-            background: var(--black);
-            color: var(--white);
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
-                         'Helvetica Neue', Arial, sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            position: relative;
         }
 
-        .container {
-            max-width: 960px;
+        /* paper grain */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: .045;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 780px;
             margin: 0 auto;
             padding: 0 24px;
         }
 
-        section { padding: 88px 0; }
+        hr.rule { border: none; border-top: 1px solid var(--rule); }
+        hr.rule-strong { border: none; border-top: 1.5px solid var(--ink); }
 
-        hr.rule { border: none; border-top: 1px solid var(--white-15); }
-
-        /* Typography */
-        .overline {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.12em;
+        /* ── Labels ── */
+        .lab {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .18em;
             text-transform: uppercase;
-            color: var(--white-50);
+            color: var(--accent);
             display: block;
+            margin-bottom: 10px;
+        }
+        .lab .sl { color: var(--faint); }
+
+        /* ── Masthead ── */
+        .mast {
+            padding: 32px 0 20px;
+            border-bottom: 1.5px solid var(--ink);
+        }
+
+        .mast-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-family: var(--mono);
+            font-size: 10.5px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--soft);
             margin-bottom: 14px;
-            text-align: center;
         }
 
-        h1 {
-            font-size: clamp(52px, 9vw, 80px);
-            font-weight: 700;
-            letter-spacing: -2.5px;
-            line-height: 1;
-        }
-
-        h2 {
-            font-size: clamp(30px, 5vw, 46px);
-            font-weight: 700;
-            letter-spacing: -1px;
-            line-height: 1.1;
-        }
-
-        h3 { font-size: 17px; font-weight: 700; line-height: 1.3; }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 17px;
-            font-weight: 600;
-            padding: 16px 28px;
-            border-radius: 100px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            letter-spacing: -0.2px;
-            transition: opacity 0.15s;
-            white-space: nowrap;
-        }
-        .btn:hover { opacity: 0.82; }
-        .btn-primary { background: var(--white); color: var(--black); }
-        .btn-outline  { background: transparent; color: var(--white); border: 1px solid var(--white); }
-
-        /* Hero */
-        .hero {
-            min-height: 100svh;
+        .mast-body {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 64px 24px;
-        }
-
-        .hero-icon {
-            width: 192px;
-            height: 192px;
-            border-radius: 44px;
-            margin-bottom: 32px;
-        }
-
-        .hero h1 { margin-bottom: 20px; }
-
-        .hero-tagline {
-            font-size: clamp(18px, 3vw, 22px);
-            font-weight: 400;
-            color: var(--white-70);
-            max-width: 480px;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-
-        .hero-sub {
-            font-size: 15px;
-            color: var(--white-50);
-            max-width: 420px;
-            line-height: 1.65;
-            margin-bottom: 40px;
-        }
-
-        .hero-cta {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .ios-note {
-            font-size: 12px;
-            color: var(--white-50);
-            letter-spacing: 0.02em;
-        }
-
-        /* Features */
-        .features-head {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        .feature-card {
-            border: 1px solid var(--white);
-            border-radius: 10px;
-            padding: 24px;
-        }
-
-        .feature-card-icon {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .feature-card h3 { margin-bottom: 8px; }
-
-        .feature-card p {
-            font-size: 15px;
-            color: var(--white-70);
-            line-height: 1.55;
-        }
-
-        /* Steps */
-        .steps-head {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .steps { display: flex; flex-direction: column; gap: 12px; }
-
-        .step {
-            display: flex;
-            align-items: flex-start;
-            gap: 18px;
-            border: 1px solid var(--white-45);
-            border-radius: 10px;
-            padding: 18px 20px;
-        }
-
-        .step-badge {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 1px solid var(--white);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            gap: 3px;
-        }
-
-        .step-badge-num {
-            font-size: 9px;
-            font-weight: 700;
-            color: var(--white-70);
-            line-height: 1;
-        }
-
-        .step h3 { margin-bottom: 5px; }
-
-        .step p {
-            font-size: 14px;
-            color: var(--white-70);
-            line-height: 1.55;
-        }
-
-        /* Languages */
-        .languages-inner { text-align: center; }
-
-        .languages-inner h2 { margin-bottom: 12px; }
-
-        .languages-desc {
-            font-size: 15px;
-            color: var(--white-70);
-            max-width: 480px;
-            margin: 0 auto 32px;
-            line-height: 1.6;
-        }
-
-        .pill-grid {
-            display: flex;
+            align-items: flex-end;
+            gap: 32px;
             flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
         }
 
-        .pill {
-            font-size: 13px;
-            font-weight: 500;
-            padding: 7px 16px;
-            border: 1px solid var(--white-45);
-            border-radius: 100px;
-            color: var(--white-70);
+        .mast-icon {
+            width: 128px;
+            height: 128px;
+            border-radius: 29px;
+            flex-shrink: 0;
         }
 
-        /* Final CTA */
-        .cta-final {
-            text-align: center;
-            padding: 88px 24px;
-        }
+        .mast-text { flex: 1; min-width: 200px; }
 
-        .cta-final h2 { margin-bottom: 40px; }
-
-        .cta-final-buttons {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--white-15);
-            padding: 28px 24px;
-            text-align: center;
-            font-size: 13px;
-            color: var(--white-50);
-        }
-
-        footer nav {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
+        .mast h1 {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(52px, 9vw, 80px);
+            line-height: .90;
+            letter-spacing: -.02em;
             margin-bottom: 10px;
         }
 
-        footer a { color: var(--white-70); text-decoration: none; }
-        footer a:hover { color: var(--white); }
+        .mast h1 .accent { color: var(--accent); font-style: normal; }
 
-        /* AI Post-Processing */
-        .ai-head {
-            text-align: center;
-            margin-bottom: 48px;
+        .mast-dek {
+            font-family: var(--mono);
+            font-size: 11px;
+            line-height: 1.55;
+            color: var(--soft);
+            max-width: 440px;
         }
 
-        .ai-desc {
-            font-size: 17px;
-            color: var(--white-70);
-            max-width: 520px;
-            margin: 14px auto 0;
-            line-height: 1.6;
-        }
-
-        .transforms-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        .transform-card {
-            border: 1px solid var(--white);
-            border-radius: 10px;
-            padding: 22px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .transform-mode {
+        /* ── Button ── */
+        .btn {
+            font-family: var(--mono);
+            font-size: 13px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1.5px solid var(--ink);
+            background: var(--ink);
+            color: var(--paper);
+            padding: 15px 24px;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            color: var(--white);
-            border: 1px solid var(--white-45);
-            border-radius: 100px;
-            padding: 5px 12px;
-            align-self: flex-start;
+            justify-content: center;
+            gap: 9px;
+            border-radius: 3px;
+            text-decoration: none;
+            transition: transform .15s;
         }
+        .btn:hover { transform: translateY(-1px); }
+        .btn:active { transform: translateY(1px); }
+        .btn.ghost { background: transparent; color: var(--ink); }
 
-        .transform-side { display: flex; flex-direction: column; gap: 7px; }
-
-        .transform-label {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--white-50);
-        }
-
-        .transform-text {
-            font-size: 15px;
-            color: var(--white-70);
-            line-height: 1.6;
-            font-style: italic;
-        }
-
-        .transform-text.out {
-            color: var(--white);
-            font-style: normal;
-            font-weight: 500;
-        }
-
-        .transform-divider {
+        /* ── CTA strip below masthead ── */
+        .mast-cta {
+            padding: 20px 0 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 24px;
+            flex-wrap: wrap;
         }
 
-        .transform-divider-line {
-            flex: 1;
-            height: 1px;
-            background: var(--white-15);
+        .mast-note {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--faint);
         }
 
-        .transform-divider svg { flex-shrink: 0; }
+        /* ── Sections ── */
+        section { padding: 64px 0; }
+
+        .section-head { margin-bottom: 36px; }
+
+        h2.disp {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(32px, 5vw, 46px);
+            line-height: .95;
+            letter-spacing: -.01em;
+            margin-bottom: 12px;
+        }
+
+        .section-body {
+            font-family: var(--sans);
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--soft);
+            max-width: 520px;
+        }
+
+        /* ── Feature rows ── */
+        .feature-rows { border-top: 1px solid var(--rule); }
+
+        .feature-row {
+            display: flex;
+            align-items: baseline;
+            gap: 24px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .feature-row-num {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .14em;
+            color: var(--faint);
+            flex: 0 0 22px;
+        }
+
+        .feature-row-content { flex: 1; }
+
+        .feature-row h3 {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: 22px;
+            line-height: 1.05;
+            margin-bottom: 5px;
+        }
+
+        .feature-row p {
+            font-size: 13.5px;
+            color: var(--soft);
+            line-height: 1.55;
+        }
+
+        .feature-row-tag {
+            font-family: var(--mono);
+            font-size: 9.5px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--faint);
+            flex-shrink: 0;
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+
+        /* ── Steps ── */
+        .stepwrap { border-top: 1px solid var(--rule); }
+
+        .step {
+            display: flex;
+            gap: 18px;
+            align-items: baseline;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .step-num {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--accent);
+            flex: 0 0 22px;
+        }
+
+        .step h4 {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: 23px;
+            line-height: 1.05;
+            margin-bottom: 5px;
+        }
+
+        .step p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--soft);
+        }
+
+        /* ── AI transforms ── */
+        .transforms { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+
+        .transform-entry { padding: 24px 0; border-bottom: 1px solid var(--rule); }
+
+        .transform-mode-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--soft);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .transform-mode-label::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--accent);
+        }
+
+        .transform-said {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 19px;
+            line-height: 1.3;
+            color: var(--soft);
+            margin-bottom: 10px;
+        }
+
+        .transform-arrow {
+            font-family: var(--serif);
+            font-size: 22px;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: block;
+            padding-left: 2px;
+        }
+
+        .transform-out {
+            font-family: var(--serif);
+            font-size: 19px;
+            line-height: 1.3;
+            color: var(--ink);
+            border-left: 3px solid var(--accent);
+            padding-left: 14px;
+        }
+
+        .transform-meta {
+            font-family: var(--mono);
+            font-size: 9.5px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--faint);
+            margin-bottom: 6px;
+        }
 
         .ai-hint {
-            font-size: 14px;
-            color: var(--white-50);
-            text-align: center;
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .05em;
+            color: var(--soft);
+            margin-top: 24px;
             line-height: 1.6;
         }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            section { padding: 64px 0; }
-            .features-grid { grid-template-columns: 1fr; }
-            .step-badge { width: 42px; height: 42px; }
-            .transforms-grid { grid-template-columns: 1fr; }
+        /* ── Languages ── */
+        .pill-wrap { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 7px; }
+
+        .pill {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .10em;
+            text-transform: uppercase;
+            color: var(--soft);
+            border: 1px solid var(--rule-2);
+            border-radius: 2px;
+            padding: 5px 10px;
+        }
+
+        /* ── Tagline strip ── */
+        .tagline {
+            font-family: var(--mono);
+            font-size: 10.5px;
+            letter-spacing: .10em;
+            text-transform: uppercase;
+            color: var(--soft);
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 20px 0 0;
+        }
+        .tagline .pip {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+
+        /* ── Final CTA ── */
+        .cta-final {
+            padding: 80px 0;
+        }
+
+        .cta-final h2 {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(38px, 7vw, 68px);
+            line-height: .93;
+            letter-spacing: -.02em;
+            margin-bottom: 36px;
+        }
+
+        .cta-final .cta-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1.5px solid var(--ink);
+            padding: 22px 0 40px;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        footer a {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .10em;
+            text-transform: uppercase;
+            color: var(--soft);
+            text-decoration: none;
+        }
+        footer a:hover { color: var(--ink); }
+
+        .footer-copy {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .08em;
+            color: var(--faint);
+        }
+
+        .footer-attr {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .03em;
+            color: var(--faint);
+            line-height: 1.65;
+            margin-top: 14px;
+            border-top: 1px solid var(--rule);
+            padding-top: 14px;
+        }
+
+        .footer-attr a {
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--faint);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 560px) {
+            .mast-body { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .feature-row-tag { display: none; }
+            .footer-inner { flex-direction: column; gap: 12px; }
         }
     </style>
 </head>
 <body>
+<div class="wrap">
 
-<!-- Hero -->
-<div class="hero">
-    <img src="icon.png" alt="SkipKey app icon" class="hero-icon">
-    <h1>SkipKey</h1>
-    <p class="hero-tagline">Dictate anything, in any app. Privately.</p>
-    <p class="hero-sub">A custom iOS keyboard that transcribes your voice entirely on-device — no cloud, no account, no waiting.</p>
-    <div class="hero-cta">
-        <a href="#" class="btn btn-primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-            </svg>
-            Download on the App Store
-        </a>
-        <span class="ios-note">iPhone · iOS 17+</span>
+    <!-- Masthead / Hero -->
+    <div class="mast">
+        <div class="mast-top">
+            <span>SkipKey · Voice to Text</span>
+            <span>iPhone · iOS 17+</span>
+        </div>
+        <div class="mast-body">
+            <img src="icon-v2.png" alt="SkipKey" class="mast-icon">
+            <div class="mast-text">
+                <h1><span class="accent">Skip</span>Key</h1>
+                <p class="mast-dek">A custom iOS keyboard that transcribes your voice entirely on-device — no cloud, no account, no waiting. Speak. Stop. Done.</p>
+            </div>
+        </div>
+        <div class="mast-cta">
+            <a href="#" class="btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+                Download on the App Store
+            </a>
+            <span class="mast-note">One purchase · No subscription</span>
+        </div>
     </div>
-</div>
 
-<hr class="rule">
+    <hr class="rule" style="margin: 0;">
 
-<!-- Features -->
-<section>
-    <div class="container">
-        <div class="features-head">
-            <span class="overline">Why SkipKey</span>
-            <h2>Everything stays on your phone.</h2>
+    <!-- Why SkipKey -->
+    <section>
+        <div class="section-head">
+            <span class="lab">01 — <span class="sl">Why SkipKey</span></span>
+            <h2 class="disp">Everything stays<br>on your phone.</h2>
+            <p class="section-body">Unlike other dictation tools, SkipKey never sends your audio to a server. Speech recognition runs locally — privately, reliably, even offline. Optional AI post-processing uses your own cloud provider, if you choose to enable it.</p>
         </div>
-        <div class="features-grid">
 
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect x="5" y="11" width="14" height="10" rx="2" stroke="white" stroke-width="1.5"/>
-                        <path d="M8 11V7a4 4 0 018 0v4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+        <div class="feature-rows">
+
+            <div class="feature-row">
+                <span class="feature-row-num">01</span>
+                <div class="feature-row-content">
+                    <h3>Local &amp; Private*</h3>
+                    <p>Your audio is transcribed on your iPhone using a bundled AI model. Nothing is sent to a server. No account required.</p>
                 </div>
-                <h3>Local &amp; Private*</h3>
-                <p>Speech recognition runs entirely on your iPhone. Your audio never leaves your device — no servers, no account required.</p>
+                <span class="feature-row-tag">On-Device</span>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect x="2" y="7" width="20" height="12" rx="2" stroke="white" stroke-width="1.5"/>
-                        <circle cx="6" cy="11.5" r="1" fill="white"/>
-                        <circle cx="9.5" cy="11.5" r="1" fill="white"/>
-                        <circle cx="13" cy="11.5" r="1" fill="white"/>
-                        <circle cx="16.5" cy="11.5" r="1" fill="white"/>
-                        <rect x="5" y="14.5" width="14" height="1.5" rx="0.75" fill="white"/>
-                    </svg>
+            <div class="feature-row">
+                <span class="feature-row-num">02</span>
+                <div class="feature-row-content">
+                    <h3>Works in Any App</h3>
+                    <p>SkipKey is a real iOS keyboard. Switch to it in Messages, Notes, Mail — anywhere you can type on your iPhone.</p>
                 </div>
-                <h3>Works in Any App</h3>
-                <p>Switch to SkipKey from the keyboard row in Messages, Notes, Mail — anywhere text is accepted on iPhone.</p>
+                <span class="feature-row-tag">Keyboard Extension</span>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+            <div class="feature-row">
+                <span class="feature-row-num">03</span>
+                <div class="feature-row-content">
+                    <h3>Instant Auto-Insert</h3>
+                    <p>Tap Stop Recording. The transcript is processed on-device and placed into your text field — no copy-paste required.</p>
                 </div>
-                <h3>Instant Auto-Insert</h3>
-                <p>Tap Stop Recording. The transcript is processed on-device and placed into your text field — no copy-paste.</p>
+                <span class="feature-row-tag">Automatic</span>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9" stroke="white" stroke-width="1.5"/>
-                        <path d="M12 3c-2 3.5-3 6-3 9s1 5.5 3 9" stroke="white" stroke-width="1.5"/>
-                        <path d="M12 3c2 3.5 3 6 3 9s-1 5.5-3 9" stroke="white" stroke-width="1.5"/>
-                        <line x1="3" y1="12" x2="21" y2="12" stroke="white" stroke-width="1.5"/>
-                        <line x1="3.5" y1="8" x2="20.5" y2="8" stroke="white" stroke-width="1.5"/>
-                        <line x1="3.5" y1="16" x2="20.5" y2="16" stroke="white" stroke-width="1.5"/>
-                    </svg>
+            <div class="feature-row">
+                <span class="feature-row-num">04</span>
+                <div class="feature-row-content">
+                    <h3>25 Languages</h3>
+                    <p>Speak naturally in English, German, French, Spanish, Italian, and 21 more. Language is detected from your voice automatically.</p>
                 </div>
-                <h3>25 Languages</h3>
-                <p>Automatic language detection. Speak in English, German, French, Spanish, and 21 more — no selector, no setup.</p>
+                <span class="feature-row-tag">Auto-Detect</span>
             </div>
 
         </div>
-        <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.45);line-height:1.6;">* Audio transcription is always on-device. If you choose to enable AI post-processing, transcript text — not your audio — is sent to your chosen third-party LLM provider. This feature is off by default.</p>
-    </div>
-</section>
 
-<hr class="rule">
-
-<!-- How it works -->
-<section>
-    <div class="container">
-        <div class="steps-head">
-            <span class="overline">How it works</span>
-            <h2>Up and running in minutes.</h2>
+        <div class="tagline">
+            <span class="pip"></span>
+            Audio always on-device — Optional AI post-processing uses your own cloud provider
         </div>
-        <div class="steps">
+        <p style="margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--faint);line-height:1.7;">* Audio transcription is always local. If you enable AI post-processing, transcript text — not your audio — is sent to your chosen third-party LLM provider. This feature is off by default.</p>
+    </section>
+
+    <hr class="rule">
+
+    <!-- How it works -->
+    <section>
+        <div class="section-head">
+            <span class="lab">02 — <span class="sl">How it works</span></span>
+            <h2 class="disp">Up and running<br>in minutes.</h2>
+        </div>
+
+        <div class="stepwrap">
 
             <div class="step">
-                <div class="step-badge">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle cx="12" cy="12" r="3" stroke="white" stroke-width="1.5"/>
-                        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                    <span class="step-badge-num">1</span>
-                </div>
+                <span class="step-num">01</span>
                 <div>
-                    <h3>Add SkipKey to your keyboards</h3>
+                    <h4>Add SkipKey to your keyboards</h4>
                     <p>Settings → General → Keyboard → Keyboards → Add New Keyboard → SkipKey. Enable Allow Full Access.</p>
                 </div>
             </div>
 
             <div class="step">
-                <div class="step-badge">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9" stroke="white" stroke-width="1.5"/>
-                        <path d="M12 3c-2 3.5-3 6-3 9s1 5.5 3 9" stroke="white" stroke-width="1.2"/>
-                        <path d="M12 3c2 3.5 3 6 3 9s-1 5.5-3 9" stroke="white" stroke-width="1.2"/>
-                        <line x1="3" y1="12" x2="21" y2="12" stroke="white" stroke-width="1.2"/>
-                    </svg>
-                    <span class="step-badge-num">2</span>
-                </div>
+                <span class="step-num">02</span>
                 <div>
-                    <h3>Switch to SkipKey in any app</h3>
+                    <h4>Switch to SkipKey in any app</h4>
                     <p>Tap the globe icon on your keyboard to switch. SkipKey appears alongside your regular keyboard.</p>
                 </div>
             </div>
 
             <div class="step">
-                <div class="step-badge">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect x="9" y="2" width="6" height="12" rx="3" stroke="white" stroke-width="1.5"/>
-                        <path d="M5 10c0 3.87 3.13 7 7 7s7-3.13 7-7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                        <line x1="12" y1="19" x2="12" y2="22" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                    <span class="step-badge-num">3</span>
-                </div>
+                <span class="step-num">03</span>
                 <div>
-                    <h3>Tap Start Recording and speak</h3>
+                    <h4>Tap Start Recording and speak</h4>
                     <p>SkipKey opens briefly to start recording. Return to your app and speak naturally in any language.</p>
                 </div>
             </div>
 
             <div class="step">
-                <div class="step-badge">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M5 12l5 5L19 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span class="step-badge-num">4</span>
-                </div>
+                <span class="step-num">04</span>
                 <div>
-                    <h3>Transcript inserts automatically</h3>
-                    <p>Tap Stop Recording in the keyboard. Your words are transcribed on-device and placed into your text field.</p>
+                    <h4>Transcript inserts automatically</h4>
+                    <p>Tap Stop Recording. Your words are transcribed on-device and placed into your text field.</p>
                 </div>
             </div>
 
         </div>
-    </div>
-</section>
+    </section>
 
-<hr class="rule">
+    <hr class="rule">
 
-<!-- AI Post-Processing -->
-<section>
-    <div class="container">
-        <div class="ai-head">
-            <span class="overline">AI Post-Processing</span>
-            <h2>Your workflow,<br>your rules.</h2>
-            <p class="ai-desc">Create custom modes that transform every transcript the moment you stop recording. Give the mode a name, write a one-line instruction, and SkipKey does the rest.</p>
+    <!-- AI Post-Processing -->
+    <section>
+        <div class="section-head">
+            <span class="lab">03 — <span class="sl">AI Post-Processing</span></span>
+            <h2 class="disp">Your workflow,<br>your rules.</h2>
+            <p class="section-body">Optionally connect your preferred LLM provider and define custom modes that transform every transcript the moment you stop recording. Name the mode, write a one-line instruction — SkipKey applies it hands-free.</p>
         </div>
 
-        <div class="transforms-grid">
+        <div class="transforms">
 
-            <div class="transform-card">
-                <div class="transform-mode">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9" stroke="white" stroke-width="1.5"/>
-                        <path d="M12 3c-2 3.5-3 6-3 9s1 5.5 3 9" stroke="white" stroke-width="1.2"/>
-                        <path d="M12 3c2 3.5 3 6 3 9s-1 5.5-3 9" stroke="white" stroke-width="1.2"/>
-                        <line x1="3" y1="12" x2="21" y2="12" stroke="white" stroke-width="1.2"/>
-                    </svg>
-                    German for Auntie
-                </div>
-                <div class="transform-side">
-                    <span class="transform-label">You said</span>
-                    <p class="transform-text">"Hey auntie, just wanted to say I'll be visiting in July — super excited to see you and the whole family!"</p>
-                </div>
-                <div class="transform-divider">
-                    <span class="transform-divider-line"></span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 5v14M5 12l7 7 7-7" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span class="transform-divider-line"></span>
-                </div>
-                <div class="transform-side">
-                    <span class="transform-label">SkipKey inserted</span>
-                    <p class="transform-text out">"Hallo Tante, ich wollte nur kurz sagen, dass ich im Juli vorbeikomme — ich freue mich so sehr, dich und die ganze Familie zu sehen!"</p>
-                </div>
+            <div class="transform-entry">
+                <div class="transform-mode-label">German for Auntie</div>
+                <div class="transform-meta">You said</div>
+                <p class="transform-said">"Hey auntie, just wanted to say I'll be visiting in July — super excited to see you and the whole family!"</p>
+                <span class="transform-arrow">↓</span>
+                <div class="transform-meta">SkipKey inserted</div>
+                <p class="transform-out">"Hallo Tante, ich wollte nur kurz sagen, dass ich im Juli vorbeikomme — ich freue mich so sehr, dich und die ganze Familie zu sehen!"</p>
             </div>
 
-            <div class="transform-card">
-                <div class="transform-mode">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect x="4" y="4" width="16" height="16" rx="2" stroke="white" stroke-width="1.5"/>
-                        <line x1="8" y1="9" x2="16" y2="9" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-                        <line x1="8" y1="12" x2="16" y2="12" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-                        <line x1="8" y1="15" x2="13" y2="15" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                    Work — Semi-Formal
-                </div>
-                <div class="transform-side">
-                    <span class="transform-label">You said</span>
-                    <p class="transform-text">"yeah so we need to push the deadline back like a week or two, the API stuff just isn't done yet"</p>
-                </div>
-                <div class="transform-divider">
-                    <span class="transform-divider-line"></span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 5v14M5 12l7 7 7-7" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span class="transform-divider-line"></span>
-                </div>
-                <div class="transform-side">
-                    <span class="transform-label">SkipKey inserted</span>
-                    <p class="transform-text out">"We need to extend the deadline by one to two weeks, as the API integration is not yet complete."</p>
-                </div>
+            <div class="transform-entry">
+                <div class="transform-mode-label">Work — Semi-Formal</div>
+                <div class="transform-meta">You said</div>
+                <p class="transform-said">"yeah so we need to push the deadline back like a week or two, the API stuff just isn't done yet"</p>
+                <span class="transform-arrow">↓</span>
+                <div class="transform-meta">SkipKey inserted</div>
+                <p class="transform-out">"We need to extend the deadline by one to two weeks, as the API integration is not yet complete."</p>
             </div>
 
         </div>
 
-        <p class="ai-hint">Name the mode, write a one-line prompt, and the button appears in the keyboard. Switch modes between recordings with a single tap.</p>
-    </div>
-</section>
+        <p class="ai-hint">Set up any mode in the app — give it a name, write a prompt, and the button appears in the keyboard. Switch modes with a single tap between recordings.</p>
+    </section>
 
-<hr class="rule">
+    <hr class="rule">
 
-<!-- Languages -->
-<section>
-    <div class="container">
-        <div class="languages-inner">
-            <span class="overline">Languages</span>
-            <h2>25 languages.<br>Detected automatically.</h2>
-            <p class="languages-desc">SkipKey detects your language from your voice — no selector, no setting, no switching.</p>
-            <div class="pill-grid">
-                <span class="pill">English</span>
-                <span class="pill">German</span>
-                <span class="pill">French</span>
-                <span class="pill">Spanish</span>
-                <span class="pill">Italian</span>
-                <span class="pill">Portuguese</span>
-                <span class="pill">Dutch</span>
-                <span class="pill">Polish</span>
-                <span class="pill">Russian</span>
-                <span class="pill">Ukrainian</span>
-                <span class="pill">Swedish</span>
-                <span class="pill">Danish</span>
-                <span class="pill">Finnish</span>
-                <span class="pill">Czech</span>
-                <span class="pill">Slovak</span>
-                <span class="pill">Hungarian</span>
-                <span class="pill">Romanian</span>
-                <span class="pill">Bulgarian</span>
-                <span class="pill">Croatian</span>
-                <span class="pill">Slovenian</span>
-                <span class="pill">Estonian</span>
-                <span class="pill">Latvian</span>
-                <span class="pill">Lithuanian</span>
-                <span class="pill">Greek</span>
-                <span class="pill">Maltese</span>
-            </div>
+    <!-- Languages -->
+    <section>
+        <div class="section-head">
+            <span class="lab">04 — <span class="sl">Languages</span></span>
+            <h2 class="disp">25 languages.<br>Detected automatically.</h2>
+            <p class="section-body">SkipKey detects your language from your voice — no selector, no setting, no switching.</p>
+        </div>
+
+        <div class="pill-wrap">
+            <span class="pill">English</span>
+            <span class="pill">German</span>
+            <span class="pill">French</span>
+            <span class="pill">Spanish</span>
+            <span class="pill">Italian</span>
+            <span class="pill">Portuguese</span>
+            <span class="pill">Dutch</span>
+            <span class="pill">Polish</span>
+            <span class="pill">Russian</span>
+            <span class="pill">Ukrainian</span>
+            <span class="pill">Swedish</span>
+            <span class="pill">Danish</span>
+            <span class="pill">Finnish</span>
+            <span class="pill">Czech</span>
+            <span class="pill">Slovak</span>
+            <span class="pill">Hungarian</span>
+            <span class="pill">Romanian</span>
+            <span class="pill">Bulgarian</span>
+            <span class="pill">Croatian</span>
+            <span class="pill">Slovenian</span>
+            <span class="pill">Estonian</span>
+            <span class="pill">Latvian</span>
+            <span class="pill">Lithuanian</span>
+            <span class="pill">Greek</span>
+            <span class="pill">Maltese</span>
+        </div>
+    </section>
+
+    <hr class="rule-strong">
+
+    <!-- Final CTA -->
+    <div class="cta-final">
+        <h2>Your voice.<br>Your phone.<br>Your words.</h2>
+        <div class="cta-buttons">
+            <a href="#" class="btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+                Download on the App Store
+            </a>
+            <span class="mast-note">iPhone · iOS 17+</span>
         </div>
     </div>
-</section>
 
-<hr class="rule">
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <nav class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </nav>
+            <span class="footer-copy">© 2026 SkipKey</span>
+        </div>
+        <div class="footer-attr">
+            Speech recognition powered by <a href="https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3" target="_blank" rel="noopener">NVIDIA Parakeet TDT 0.6B v3</a>, used under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. On-device runtime provided by FluidAudio, used under Apache 2.0. SkipKey is not affiliated with or endorsed by NVIDIA Corporation.
+        </div>
+    </footer>
 
-<!-- Final CTA -->
-<div class="cta-final">
-    <h2>Your voice.<br>Your phone.<br>Your words.</h2>
-    <div class="cta-final-buttons">
-        <a href="#" class="btn btn-primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-            </svg>
-            Download on the App Store
-        </a>
-        <span class="ios-note">iPhone · iOS 17+</span>
-    </div>
 </div>
-
-<!-- Footer -->
-<footer>
-    <nav>
-        <a href="terms.html">Terms of Service</a>
-        <a href="privacy.html">Privacy Policy</a>
-    </nav>
-    <p>© 2026 SkipKey</p>
-    <p style="margin-top:14px;font-size:11px;color:rgba(255,255,255,0.35);max-width:600px;margin-left:auto;margin-right:auto;line-height:1.6;">Speech recognition powered by <a href="https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3" style="color:rgba(255,255,255,0.5);text-decoration:underline;text-underline-offset:2px;" target="_blank" rel="noopener">NVIDIA Parakeet TDT 0.6B v3</a>, used under <a href="https://creativecommons.org/licenses/by/4.0/" style="color:rgba(255,255,255,0.5);text-decoration:underline;text-underline-offset:2px;" target="_blank" rel="noopener">CC BY 4.0</a>. On-device runtime provided by FluidAudio, used under Apache 2.0. SkipKey is not affiliated with or endorsed by NVIDIA Corporation.</p>
-</footer>
-
 </body>
 </html>
