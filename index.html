@@ -458,15 +458,75 @@
             text-underline-offset: 2px;
         }
 
+        /* ── Trial banner ── */
+        .trial-bar {
+            background: var(--accent);
+            color: var(--accent-ink);
+            text-align: center;
+            padding: 10px 24px;
+            font-family: var(--mono);
+            font-size: 10.5px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 10;
+            margin: 0 -24px;
+        }
+        .trial-bar strong { font-weight: 700; }
+        .trial-bar .sep { opacity: .5; margin: 0 10px; }
+
+        /* ── Speed callout ── */
+        .speed-callout {
+            background: var(--ink);
+            color: var(--paper);
+            border-radius: 4px;
+            padding: 28px 28px 24px;
+            margin-bottom: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .speed-num {
+            font-family: var(--serif);
+            font-size: clamp(52px, 9vw, 72px);
+            line-height: 1;
+            letter-spacing: -.03em;
+            color: var(--accent-ink);
+            flex-shrink: 0;
+        }
+        .speed-num span { color: #7B8BF7; }
+        .speed-copy { flex: 1; min-width: 200px; }
+        .speed-copy strong {
+            display: block;
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: 22px;
+            line-height: 1.1;
+            margin-bottom: 7px;
+        }
+        .speed-copy p {
+            font-family: var(--mono);
+            font-size: 10.5px;
+            letter-spacing: .06em;
+            color: rgba(237,231,215,.55);
+            line-height: 1.6;
+        }
+
         /* ── Responsive ── */
         @media (max-width: 560px) {
             .mast-body { flex-direction: column; align-items: flex-start; gap: 16px; }
             .feature-row-tag { display: none; }
             .footer-inner { flex-direction: column; gap: 12px; }
+            .speed-callout { padding: 20px 18px; }
         }
     </style>
 </head>
 <body>
+<div class="trial-bar">
+    <strong>Try free for 7 days</strong><span class="sep">·</span>One-time purchase<span class="sep">·</span>No subscription, ever
+</div>
+
 <div class="wrap">
 
     <!-- Masthead / Hero -->
@@ -489,7 +549,7 @@
                 </svg>
                 Download on the App Store
             </a>
-            <span class="mast-note">One purchase · No subscription</span>
+            <span class="mast-note">7-day free trial · One-time purchase · No subscription</span>
         </div>
     </div>
 
@@ -501,6 +561,15 @@
             <span class="lab">01 — <span class="sl">Why SkipKey</span></span>
             <h2 class="disp">Everything stays<br>on your phone.</h2>
             <p class="section-body">Unlike other dictation tools, SkipKey never sends your audio to a server. Speech recognition runs locally — privately, reliably, even offline. Optional AI post-processing uses your own cloud provider, if you choose to enable it.</p>
+        </div>
+
+        <!-- Speed callout -->
+        <div class="speed-callout" style="margin-bottom: 28px;">
+            <div class="speed-num">5<span>×</span></div>
+            <div class="speed-copy">
+                <strong>Speak faster than you can type.</strong>
+                <p>The average person types ~40 words per minute but speaks at ~200&nbsp;wpm.<br>Voice dictation lets you get your thoughts out up to 5× faster — with less effort.</p>
+            </div>
         </div>
 
         <div class="feature-rows">
@@ -682,7 +751,7 @@
                 </svg>
                 Download on the App Store
             </a>
-            <span class="mast-note">iPhone · iOS 17+</span>
+            <span class="mast-note">7-day free trial · One-time purchase · iPhone · iOS 17+</span>
         </div>
     </div>
 
